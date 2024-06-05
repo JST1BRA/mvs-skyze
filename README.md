@@ -39,14 +39,45 @@ MainTav:AddToggle({
 	Callback = function(state)
 		toggleState = state
 		if toggleState then
-			print("Toggle is ON")
+		
 			if not bringingPlayers then
 				bringingPlayers = true
 				coroutine.wrap(bringPlayersToMe)()
 			end
 		else
-			print("Toggle is OFF")
+		
 			bringingPlayers = false
 		end
 	end    
 })
+
+MainTav:AddToggle({
+    Name = "MACHINE GUN [HOLD GUN]",
+    Default = false,
+    Callback = function(state)
+        if state then
+     
+            while state do
+				game.Players.LocalPlayer.Character.Default:SetAttribute("Cooldown", 0)
+
+                wait(0.1) -- Adjust the delay according to your needs
+            end
+        else
+			game.Players.LocalPlayer.Character.Default:SetAttribute("Cooldown", 2.5)
+        end
+    end    
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
