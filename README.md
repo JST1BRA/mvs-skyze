@@ -17,6 +17,8 @@ local MainTav = Main:MakeTab({
 
 local toggleState = false
 local bringingPlayers = false
+local cooldownToggleState = false
+local updatingCooldown = false
 
 local function bringPlayersToMe()
 	while toggleState do
@@ -29,7 +31,18 @@ local function bringPlayersToMe()
 				end
 			end
 		end
-		wait(0.01) -- dont touch bitch lmao
+		wait(0.01) -- don't touch this lmao
+	end
+end
+
+local function updateCooldown()
+	while cooldownToggleState do
+		local player = game.Players.LocalPlayer
+		if player and player.Character and player.Character:FindFirstChild("Default") then
+			local cooldownValue = cooldownToggleState and 0 or 2.5
+			player.Character.Default:SetAttribute("Cooldown", cooldownValue)
+		end
+		wait(0.01)
 	end
 end
 
@@ -39,45 +52,28 @@ MainTav:AddToggle({
 	Callback = function(state)
 		toggleState = state
 		if toggleState then
-		
 			if not bringingPlayers then
 				bringingPlayers = true
 				coroutine.wrap(bringPlayersToMe)()
 			end
 		else
-		
 			bringingPlayers = false
 		end
 	end    
 })
 
 MainTav:AddToggle({
-    Name = "MACHINE GUN [HOLD GUN]",
-    Default = false,
-    Callback = function(state)
-        if state then
-     
-            while state do
-				game.Players.LocalPlayer.Character.Default:SetAttribute("Cooldown", 0)
-
-                wait(0.1) -- Adjust the delay according to your needs
-            end
-        else
-			game.Players.LocalPlayer.Character.Default:SetAttribute("Cooldown", 2.5)
-        end
-    end    
+	Name = "MachineGun [RE EQUIP GUN]",
+	Default = false,
+	Callback = function(state)
+		cooldownToggleState = state
+		if cooldownToggleState then
+			if not updatingCooldown then
+				updatingCooldown = true
+				coroutine.wrap(updateCooldown)()
+			end
+		else
+			updatingCooldown = false
+		end
+	end    
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
