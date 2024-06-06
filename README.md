@@ -19,6 +19,8 @@ local toggleState = false
 local bringingPlayers = false
 local cooldownToggleState = false
 local updatingCooldown = false
+local throwSpeedToggleState = false
+local updatingThrowSpeed = false
 
 local function bringPlayersToMe()
 	while toggleState do
@@ -46,6 +48,17 @@ local function updateCooldown()
 	end
 end
 
+local function updateThrowSpeed()
+	while throwSpeedToggleState do
+		local player = game.Players.LocalPlayer
+		if player and player.Character and player.Character:FindFirstChild("Default") then
+			local throwSpeedValue = throwSpeedToggleState and 99999 or 0 -- set to 0 when the toggle is off
+			player.Character.Default:SetAttribute("ThrowSpeed", throwSpeedValue)
+		end
+		wait(0.01)
+	end
+end
+
 MainTav:AddToggle({
 	Name = "Bring all",
 	Default = false,
@@ -63,7 +76,7 @@ MainTav:AddToggle({
 })
 
 MainTav:AddToggle({
-	Name = "MachineGun [RE EQUIP GUN]",
+	Name = "MachineGun [RE EQUIP TO FIX]",
 	Default = false,
 	Callback = function(state)
 		cooldownToggleState = state
@@ -74,6 +87,39 @@ MainTav:AddToggle({
 			end
 		else
 			updatingCooldown = false
+		end
+	end    
+})
+
+MainTav:AddToggle({
+	Name = "HitScanKnife [RE EQUIP TO FIX]",
+	Default = false,
+	Callback = function(state)
+		throwSpeedToggleState = state
+		if throwSpeedToggleState then
+			if not updatingThrowSpeed then
+				updatingThrowSpeed = true
+				coroutine.wrap(updateThrowSpeed)()
+			end
+		else
+			updatingThrowSpeed = false
+		end
+	end    
+})
+
+-- New Teleports Tab
+local TeleportsTab = Main:MakeTab({
+	Name = "Teleports",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+TeleportsTab:AddButton({
+	Name = "Spawn",
+	Callback = function()
+		local player = game.Players.LocalPlayer
+		if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+			player.Character.HumanoidRootPart.CFrame = CFrame.new(151.105072, -276.000641, -1326.29724, 0.0400864817, -1.95205019e-10, 0.999196231, -7.29722132e-08, 1, 3.12291437e-09, -0.999196231, -7.30387484e-08, 0.0400864817)
 		end
 	end    
 })
